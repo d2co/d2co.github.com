@@ -816,7 +816,12 @@ id("encodeURL").addEventListener("click", function() {
       console.log("oops");
     }, false);
     encodingImage.crossOrigin = "Anonymous";
+    if (id("encodeURLInput").value.indexOf("://") != -1){
     encodingImage.src = id("encodeURLInput").value;
+    }
+    else {
+    encodingImage.src = "http://" + id("encodeURLInput").value;
+    }
 }, false);
 
 id("encodeText").addEventListener("click", function() {
@@ -947,7 +952,12 @@ id("decodeURL").addEventListener("click", function() {
         getDataFromCanvas();
     }, false);
     decodingImage.crossOrigin = "Anonymous";
-    decodingImage.src = id("decodeURLInput").value;
+    if (id("decodeURLInput").value.indexOf("://") != -1){
+      decodingImage.src = id("decodeURLInput").value;
+    }
+    else{
+      decodingImage.src = "http://" + id("decodeURLInput").value;
+    }
 }, false);
 
 
