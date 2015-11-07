@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Data To Colors</title>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.canvases {
+  display: none;
+}
+
+iframe {
+  border: 0;
+}
+</style>
+</head>
+<body>
+<div class="canvases">
+    <canvas id="encodeCanvas"></canvas>
+    <canvas id="decodeCanvas"></canvas>
+</div>
+  <div class="decodeBlock" id="decodeBlock"></div>
+<script>
+var id = function(name) {
+    return document.getElementById(name);
+};
+var ec = id("encodeCanvas");
+var ectx = ec.getContext("2d");
+var dc = id("decodeCanvas");
+var dctx = dc.getContext("2d");
+var inputString, encodingImage, decodeString, decodingImage;
+
+var getDataFromCanvas = function() {
+    decodeString = "";
+    var outputRow = [];
+    //var img = new Image();
+    //img.src = canvas.toDataURL('image/png', 1);
+    var blockSize = 128;
+    var height = Math.ceil(decodingImage.height / blockSize);
+    var width = Math.ceil(decodingImage.width / blockSize);
+    var finished = false;
+    for (var imgRow = 0; imgRow < height; imgRow++) {
+        for (var imgColumn = 0; imgColumn < width; imgColumn++) {
+            dctx.clearRect(0, 0, decodeCanvas.width, decodeCanvas.height);
+            if (decodingImage.width - (imgColumn * blockSize) <= blockSize) {
+                decodeCanvas.width = decodingImage.width - (imgColumn * blockSize);
+            } else {
+                decodeCanvas.width = blockSize;
+            }
+            if (decodingImage.height - (imgRow * blockSize) <= blockSize) {
+                decodeCanvas.height = decodingImage.height - (imgRow * blockSize);
+            } else {
+                decodeCanvas.height = blockSize;
+            }
+            dctx.drawImage(decodingImage, -(imgColumn * blockSize), -(imgRow * blockSize));
+            //test.innerHTML += "<img src='"+decodeCanvas.toDataURL("image/png", 1)+"'/>";
+            console.log("row:" + imgRow + ",column:" + imgColumn);
+
+            var canvasImage = dctx.getImageData(0, 0, decodeCanvas.width, decodeCanvas.height);
+            var canvasData = canvasImage.data;
+            
+            if(imgRow === 0 && imgColumn === 0){
+              if(canvasData[0] === 100 || canvasData >= 248 && canvasData <= 251){
+              console.log("yes");
+              }
+              else{
+                showError("Not a valid image.");
+                finished = true;
+              }
+            }
+          
+            //console.log(canvasData);
+            for (var canvasRow = 0; canvasRow < decodeCanvas.height; canvasRow++) {
+                var currentRow = "";
+                for (var canvasColumn = 0; canvasColumn < decodeCanvas.width; canvasColumn++) {
+                    for (var rgb = 0; rgb < 3; rgb++) {
+                        if (canvasData[((canvasRow * (decodeCanvas.width * 4)) + (canvasColumn * 4)) + rgb] !== 0) {
+                            currentRow += String.fromCharCode(canvasData[((canvasRow * (decodeCanvas.width * 4)) + (canvasColumn * 4)) + rgb]);
+                        } else {
+                            //finished = true;
+                            //break;
+                        }
+                    }
+                    if (finished === true) {
+                        break;
+                    }
+                }
+                if (typeof outputRow[canvasRow + (imgRow * blockSize)] === "undefined") {
+                    outputRow[canvasRow + (imgRow * blockSize)] = currentRow;
+                } else {
+                    outputRow[canvasRow + (imgRow * blockSize)] += currentRow;
+                    //console.log(outputRow[canvasRow + (imgRow * blockSize)]);
+                }
+            }
+        }
+    }
+
+    for (var i = 0; i < outputRow.length; i++) {
+        decodeString += outputRow[i];
+    }
+    if (decodeString.indexOf("data:image") != -1) {
+        id("decodeBlock").innerHTML = "<img src='"+decodeString+"'/>";
+    } else if (decodeString.indexOf("data:text/html") != -1) {
+        id("decodeBlock").innerHTML = '<iframe id="iframe" src="' + decodeString + '" style="position: absolute; top: 0; left: 0; height: 100%; width: 100%;"></iframe>';
+    } else if (decodeString.indexOf("data:text/plain") != -1) {
+        id("decodeBlock").innerHTML = '<iframe id="iframe" src="' + decodeString + '" style="position: absolute; top: 0; left: 0; height: 100%; width: 100%;"></iframe>';
+    } else {
+        id("decodeBlock").innerHTML = "<h1 style='text-align: center;'><a href='"+decodeString+"'>Download</a></h1>";
+    }
+};
+
+var imageURL = function(){
+  console.log("hi");
+  decodingImage = new Image();
+  decodingImage.addEventListener("load", function(){
+    getDataFromCanvas();
+  }, false);
+  decodingImage.crossOrigin = "Anonymous";
+  decodingImage.src = url;
+};
+
+var query = function(){
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++){
+    var pair = vars[i].split("=");
+    if(pair[0] == "i"){
+      url = "http://i.imgur.com/" + pair[1] + ".png";
+      console.log(url);
+      imageURL();
+    }
+    else if(pair[0] == "url"){
+      url = pair[1];
+      console.log(url);
+      imageURL();
+    }
+    else {
+      id("decodeBlock").innerHTML = "Decode link not specified.";
+    }
+  }
+};
+
+query();
+</script>
+</body>
+</html>
