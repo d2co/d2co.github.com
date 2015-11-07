@@ -5,7 +5,7 @@
   <title>Data to Colors</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href='https://fonts.googleapis.com/css?family=Roboto+Mono:300,400' rel='stylesheet' type='text/css'>
-<style id="jsbin-css">
+<style>
 /*
 html, body {
   width: 1000px;
@@ -75,7 +75,6 @@ input {
 }
 
 .center {
-  position: absolute;
   margin: auto;
   top: 0;
   left: 0;
@@ -122,7 +121,6 @@ input {
   background-color: green;
   background: url("");
   background-size: 100%;
-  
 }
 
 .settings-icon img {
@@ -177,6 +175,12 @@ input {
   color: #999;
 }
 
+.settings-footer a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
 .settings-triangle {
   display: block;
   position: relative;
@@ -221,9 +225,8 @@ input {
 }
 
 .code {
-  height: calc(100vh - 120px);
+  height: auto;
   width: 400px;
-  overflow-y: auto;
 }
 
 .output {
@@ -252,6 +255,14 @@ input {
   background-color: #B0BEC5;
 }
 
+.block h2 {
+  font-size: 20px;
+}
+
+.block h2 a {
+  font-size: 13px;
+}
+
 textarea {
   margin: 0;
   padding: 0;
@@ -264,9 +275,9 @@ textarea {
 
 .outputBlock {
   background-color: #37474F;
-  height: auto;
-  min-height: calc(100vh - 140px);
-  max-height: 1000px;
+  min-height: 800px;
+  height: calc(100vh - 140px);
+  max-height: 1000px !important;
   margin-left: -20px;
   padding: 20px;
   color: white;
@@ -304,7 +315,9 @@ textarea {
 }
 
 .iframe-container {
-  height: 70vh;
+  height: auto;
+  min-height: 500px;
+  max-height: 70vh;
   width: 100%;
   background-color: white;
   z-index: 0;
@@ -324,7 +337,6 @@ textarea {
   justify-content: center;
   flex-flow: row wrap;
   -ms-flex-pack: center;
-  margin-bottom: 30px;
 }
 
 .attribute {
@@ -335,10 +347,101 @@ textarea {
   padding: 10px;
 }
 
-a {
+.outputBlock a {
   text-decoration: none;
   color: inherit;
   cursor: pointer;
+}
+
+.imgur-container {
+  line-height: 25px;
+  text-align: center;
+}
+
+.imgur-url {
+  background-color: #455A64;
+  text-align: center;
+  color: white;
+  padding: 5px;
+  overflow: hidden;
+}
+
+.container .error-container {
+  position: fixed;
+  width: 100%;
+  max-width: 1500px;
+  bottom: 0;
+  text-align: center;
+}
+
+.error-container .error {
+  position: absolute;
+  display: block;
+  height: auto;
+  width: 500px;
+  padding: 15px;
+  color: white;
+  margin: auto;
+  background-color: #F44336;
+  line-height: 27px;
+  word-wrap: break-word;
+  overflow: hidden;
+  vertical-align: middle;
+  bottom: 10px;
+  margin-left: calc(50% - 250px);
+}
+
+#error-close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 57px;
+  width: 57px;
+  cursor: pointer;
+  transition: 100ms background-color;
+}
+#error-close:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+
+#error-text {
+  max-width: 330px;
+  text-align: left;
+}
+
+.error-cross {
+  position: absolute;
+  display: block;
+  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMBAMAAACkW0HUAAAAGFBMVEUAAAD///////////////////////////8jfp1fAAAAB3RSTlMAUIOFhoiJ960gEQAAAEJJREFUCB0FwbENgEAMBMFFFsRkn1KCM5dAKcSvC7Z9ZjgarpsV+DZjn4Yyrw2jAUobKG1gNFBmbMYuwwrM5nig7h+btg/A2Q4ZhQAAAABJRU5ErkJggg==");
+  height: 12px;
+  width: 12px;
+  background-size: 12px 12px;
+  background-position: center;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+}
+
+#loading {
+  display: inline-block;
+  margin: 10px;
+  height: 40px;
+  width: 40px;
+  border-top: 5px solid white;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-radius: 50%;
+  animation: rotate 700ms linear infinite;
+  text-align: center;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  100% {
+    transform: rotateZ(360deg);
+  }
 }
 
 @-webkit-keyframes colors {
@@ -369,7 +472,9 @@ a {
 }
 
 @media screen and (max-width: 800px), screen and (max-device-width: 800px){
-  
+  input {
+    max-width: calc(100% - 50px);
+  }
   .side {
     width: 100%;
   }
@@ -395,6 +500,14 @@ a {
   .triangle-hidden {
     margin-top: 42px;
   }
+  .error-container .error {
+    bottom: 0 !important;
+    margin-left: 0 !important;
+    width: 100%;
+  }
+  #error-text {
+    max-width: calc(100% - 42px);
+  }
 }
 
 @media screen and (min-width: 1000px){
@@ -407,12 +520,19 @@ a {
   }
 }
 
-@media screen and (max-height: 800px) and (min-width: 800px) and (min-device-width: 800px){
+@media screen and (max-height: 825px) and (min-width: 825px) and (min-device-width: 825px){
   textarea {
     min-height: 50px;
   }
+  .side {
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+  .outputBlock {
+    height: 660px;
+  }
   .code {
-    line-height: 35px;
+    line-height: 30px;
   }
 }
 </style>
@@ -437,12 +557,12 @@ a {
       <h1>Settings</h1>
       <h2>Default encode shape</h2>
       <form>
-        <p><input type="radio" name="shape" id="shapeSquare"/> Square</p>
-        <p><input type="radio" name="shape" id="shapeHeight"/> Height</p>
-        <p><input type="radio" name="shape" id="shapeWidth"/> Width</p>
+        <p><input type="radio" name="shape" id="shapeSquare"/>&nbsp;Square</p>
+        <p><input type="radio" name="shape" id="shapeHeight"/>&nbsp;Height</p>
+        <p><input type="radio" name="shape" id="shapeWidth"/>&nbsp;Width</p>
         <p id="lengthDisplay"><input type="number" id="shapeLength"/>px</p>
       </form>
-        <div class="settings-footer">v0.2 (wip) · <a href="http://inclushe.github.io">made by Inclushe</a></div>
+        <div class="settings-footer">v0.3 · <a href="http://inclushe.github.io">made by Inclushe</a></div>
       </div>
     </div>
   </div>
@@ -453,8 +573,8 @@ a {
         <h1>Encode</h1>
       </div>
       <div class="block">
-      <h2>File</h2>
-        <p><input type="file" id="encodefileInput"/></p>
+      <h2>File <a>(recommended < 1MB)</a></h2>
+        <h3><input type="file" id="encodefileInput"/><a id="encodeFile" class="arrow"></a></h3>
         <h3><input type="url" id="encodeURLInput" placeholder="Image URL"/> <a id="encodeURL" class="arrow"></a></h3>
       <h3>Plain Text <a id="encodeText" class="arrow"></a></h3>
         <textarea id="encodeTextInput"></textarea>
@@ -463,8 +583,8 @@ a {
         <h1>Decode</h1>
       </div>
        <div class="block">
-      <h2>File</h2>
-      <input type="file" id="decodeFileInput"/>
+         <h2>File <a>(.png only)</a></h2>
+         <h3><input type="file" id="decodeFileInput"/></h3>
       <h3><input type="url" placeholder="Image URL" id="decodeURLInput"/> <a id="decodeURL" class="arrow"></a></h3>
       </div>
     </div>
@@ -473,9 +593,7 @@ a {
     <div class="section">
       <div class="outputBlock" id="introBlock">
         Encode and decode files on the side.
-        <br>
-        <h2>This is a work in progress!</h2>
-        <h3>(things may not work)</h3>
+        
       </div>
       <div class="outputBlock hidden" id="encodeBlock">
         <h2 class="title">Encoded Data</h2>
@@ -491,13 +609,21 @@ a {
           </div>
         </div>
         <h2><a id="encodeDL" download>Download</a></h2>
-        <h2 id="encodeImgur">Upload to Imgur</h2>
+        <h2><a id="encodeImgur">Upload to Imgur</a></h2>
+        <div id="loading" class="hidden"></div>
+        <div class="imgur-container hidden" id="imgurContainer">
+          <p>Image URL</p>
+          <div class="imgur-url" id="imgurURL"></div>
+          <p>Direct Decode Link</p>
+          <div class="imgur-url" id="directDecodeURL"></div>
+        </div>
       </div>
       <div class="outputBlock hidden" id="decodeBlock">
         <h2 class="title">Decoded Data</h2>
         <div class="img-container hidden" id="decodedImgContainer"></div>
         <div class="iframe-container" id="iframeContainer"></div>
-        <div class="group hidden" id="decodedInfo">
+        <div class="group">
+          <div id="decodedInfo">
           <div class="attribute">
             <p>Height</p>
             <p id="decodedImgHeight"></p>
@@ -506,17 +632,31 @@ a {
             <p>Width</p>
             <p id="decodedImgWidth"></p>
           </div>
+          </div>
           <div class="attribute">
             <p>File Type</p>
             <p id="decodedFileType"></p>
           </div>
         </div>
+        
         <h2 class="title"><a id="decodeDL" download>Download</a></h2>
       </div>
     </div>
   </div>
+  <div class="error-container hidden" id="errorContainer">
+    <div style="height: 100%; width: 100%; ">
+    <div class="error">
+      <div id="error-close">
+        <i class="error-cross center"></i>
+      </div>
+      <div id="error-text">An error occured.
+      </div>
+      
+    </div>
+    </div>
+  </div>
 </div>
-<script id="jsbin-javascript">
+<script>
 var id = function(name) {
     return document.getElementById(name);
 };
@@ -638,14 +778,26 @@ id("container").addEventListener("click", function() {
         settingsGear.className = "gear-rotate";
     }
 }, false);
+/*id("desktopToggle").addEventListener("click", function(){
+  if(this.checked === true){
+    document.body.setAttribute("style","width: 1000px");
+  }
+  else{
+    try{}
+    catch(e){
+      document.body.removeAttribute("Style");
+    }
+  }
+},false);*/
 
 //select text
 
 var selectText = function(drop) {
     var range;
+  try{
     if (document.body.createTextRange) {
         range = document.body.createTextRange();
-        range.moveToElementText(text);
+        range.moveToElementText(drop);
         range.select();
     } else if (window.getSelection) {
         var selection = window.getSelection();
@@ -654,6 +806,10 @@ var selectText = function(drop) {
         selection.removeAllRanges();
         selection.addRange(range);
     }
+  }
+  catch(e){
+    
+  }
 };
 
 //encoding data
@@ -776,6 +932,7 @@ function drawColor() {
     colorNum = 0;
     //
     window.scroll(0, id("outputSection").offsetTop);
+    id("imgurContainer").setAttribute("class", "imgur-container hidden");
     var encodedImage = new Image();
     encodedImage.addEventListener("load", function() {
         id("introBlock").setAttribute("class", "outputBlock hidden");
@@ -796,10 +953,20 @@ id("encodefileInput").addEventListener("change", function() {
     reader.onload = function(event) {
         //console.log(event.target.result);
         inputString = event.target.result;
+        //drawColor();
+      if(files.size > 1048575){
+        showError("File is larger than 1MB. Encoding it may crash your browser. Click the arrow to continue.");
+      }
+      else{
         drawColor();
+      }
     };
     reader.readAsDataURL(files);
 }, false);
+
+id("encodeFile").addEventListener("click",function(){
+  drawColor();
+},false);
 
 id("encodeURL").addEventListener("click", function() {
     //console.log("hi");
@@ -813,7 +980,7 @@ id("encodeURL").addEventListener("click", function() {
       drawColor();
     }, false);
     encodingImage.addEventListener("error", function() {
-      console.log("oops");
+      showError("We couldn't access this image.");
     }, false);
     encodingImage.crossOrigin = "Anonymous";
     if (id("encodeURLInput").value.indexOf("://") != -1){
@@ -865,7 +1032,17 @@ var getDataFromCanvas = function() {
 
             var canvasImage = dctx.getImageData(0, 0, decodeCanvas.width, decodeCanvas.height);
             var canvasData = canvasImage.data;
-
+            
+            if(imgRow === 0 && imgColumn === 0){
+              if(canvasData[0] === 100 || canvasData >= 248 && canvasData <= 251){
+              console.log("yes");
+              }
+              else{
+                showError("Not a valid image.");
+                finished = true;
+              }
+            }
+          
             //console.log(canvasData);
             for (var canvasRow = 0; canvasRow < decodeCanvas.height; canvasRow++) {
                 var currentRow = "";
@@ -879,7 +1056,7 @@ var getDataFromCanvas = function() {
                         }
                     }
                     if (finished === true) {
-                        //break;
+                        break;
                     }
                 }
                 if (typeof outputRow[canvasRow + (imgRow * blockSize)] === "undefined") {
@@ -918,15 +1095,25 @@ var getDataFromCanvas = function() {
         id("decodedInfo").setAttribute("class", "group hidden");
         id("iframeContainer").setAttribute("class", "iframe-container");
         id("iframeContainer").innerHTML = '<iframe id="iframe" src="' + decodeString + '" style="position: absolute; top: 0; left: 0; height: 100%; width: 100%;"></iframe>';
+        id("decodedFileType").innerHTML = decodeString.match(/data:(.*?)(?=;|,)/)[1];
+      console.log(id("decodedFileType").innerHTML);
+      //change to affect any file type
     } else if (decodeString.indexOf("data:text/plain") != -1) {
         id("decodedImgContainer").setAttribute("class", "img-container hidden");
         id("decodedInfo").setAttribute("class", "group hidden");
         id("iframeContainer").setAttribute("class", "iframe-container");
       id("iframeContainer").innerHTML = '<iframe id="iframe" src="' + decodeString + '" style="position: absolute; top: 0; left: 0; height: 100%; width: 100%;"></iframe>';
+        id("decodedFileType").innerHTML = decodeString.match(/data:(.*?)(?=;|,)/)[1];
     } else {
         id("decodedImgContainer").setAttribute("class", "img-container hidden");
         id("decodedInfo").setAttribute("class", "group hidden");
         id("iframeContainer").setAttribute("class", "iframe-container hidden");
+        if(decodeString.match(/data:(.*?)(?=;|,)/)[1] === ""){
+          id("decodedFileType").innerHTML = "unknown";
+        }
+        else{
+          id("decodedFileType").innerHTML = decodeString.match(/data:(.*?)(?=;|,)/)[1];
+        }
     }
     try {
         id("decodedDL").href = "";
@@ -938,10 +1125,18 @@ id("decodeFileInput").addEventListener("change", function() {
     var f = id("decodeFileInput").files[0];
     var url = window.URL || window.webkitURL;
     var src = url.createObjectURL(f);
+    if(f.type != "image/png"){
+      showError("File is not a .png image.");
+    }
     decodingImage.src = src;
     decodingImage.onload = function() {
+        if(f.type != "image/png"){
+          showError("File is not a .png image.");
+        }
+        else {
         getDataFromCanvas();
         url.revokeObjectURL(src);
+        }
     };
 }, false);
 
@@ -950,6 +1145,9 @@ id("decodeURL").addEventListener("click", function() {
     decodingImage = new Image();
     decodingImage.addEventListener("load", function() {
         getDataFromCanvas();
+    }, false);
+    decodingImage.addEventListener("error", function() {
+      showError("We couldn't access this image.");
     }, false);
     decodingImage.crossOrigin = "Anonymous";
     if (id("decodeURLInput").value.indexOf("://") != -1){
@@ -964,6 +1162,73 @@ id("decodeURL").addEventListener("click", function() {
 id("decodeDL").addEventListener("click", function() {
     this.href = decodeString;
 }, false);
+
+id("error-close").addEventListener("click",function(){
+  id("errorContainer").setAttribute("class", "error-container hidden");
+},false);
+
+var showError = function(info){
+  id("error-text").innerHTML = info;
+  id("errorContainer").setAttribute("class", "error-container");
+};
+
+function share(){
+var clientId = "5b8e80704fd9601";
+try {
+  var img = ec.toDataURL('image/png', 1).split(',')[1];
+}
+catch(e) {
+  var img = ec.toDataURL().split(',')[1];
+}
+  
+var xhr;
+if (window.XMLHttpRequest) {
+  xhr = new XMLHttpRequest();
+}
+else {
+  //error
+}
+
+xhr.onreadystatechange = function() {
+  if (xhr.readyState == 4 && xhr.status != 200) {
+    //error
+    id("loading").setAttribute("class", "hidden");
+    var data = JSON.parse(xhr.response);
+    console.log(xhr.response);
+    showError("Imgur upload failed. (" + data.status + ")");
+  }
+  if (xhr.readyState == 4 && xhr.status == 200) {
+    id("loading").setAttribute("class", "hidden");
+    var data = JSON.parse(xhr.response);
+    console.log(xhr.response);
+    id("imgurContainer").setAttribute("class", "imgur-container");
+    id("imgurURL").innerHTML = data.data.link;
+    id("directDecodeURL").innerHTML = "http://d2co.github.io/f?i=" + data.data.id;
+  }
+};
+
+if (location.protocol === 'https:') {
+    xhr.open("POST", "https://api.imgur.com/3/upload", true);
+}
+if (location.protocol === 'http:') {
+    xhr.open("POST", "http://api.imgur.com/3/upload", true);
+}
+xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
+xhr.setRequestHeader("Authorization", "Client-ID " + clientId);
+xhr.send(JSON.stringify({image: img}));
+}
+
+id("encodeImgur").addEventListener("click",function(){
+  id("loading").removeAttribute("class");
+  share();
+},false);
+
+id("directDecodeURL").addEventListener("click",function(){
+  selectText(this);
+},false);
+id("imgurURL").addEventListener("click",function(){
+  selectText(this);
+},false);
 </script>
 </body>
 </html>
