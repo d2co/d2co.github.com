@@ -933,6 +933,7 @@ function drawColor() {
     //
     window.scroll(0, id("outputSection").offsetTop);
     id("imgurContainer").setAttribute("class", "imgur-container hidden");
+    id("encodeImgur").removeAttribute("class");
     var encodedImage = new Image();
     encodedImage.addEventListener("load", function() {
         id("introBlock").setAttribute("class", "outputBlock hidden");
@@ -942,6 +943,9 @@ function drawColor() {
         id("encodedImgHeight").innerHTML = encodedImage.height;
         id("encodedImgWidth").innerHTML = encodedImage.width;
         //console.log(encodedImage.src);
+        if(encodedImage.src.length > 1000000){
+          id("encodeImgur").setAttribute("class","hidden");
+        }
     }, false);
     encodedImage.src = ec.toDataURL('image/png');
     //console.log(encodedImage);
