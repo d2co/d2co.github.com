@@ -6,11 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href='https://fonts.googleapis.com/css?family=Roboto+Mono:300,400' rel='stylesheet' type='text/css'>
 <style>
-/*
-html, body {
-  width: 1000px;
-}
-*/
 
 body {
   margin: 0;
@@ -40,24 +35,6 @@ input {
   color: black;
   max-width: 100%;
 }
-
-/*
-::-webkit-input-placeholder {
-   color: black;
-}
-
-:-moz-placeholder {
-   color: black;  
-}
-
-::-moz-placeholder {
-   color: black;  
-}
-
-:-ms-input-placeholder {  
-   color: black;  
-}
-*/
 
 .arrow {
   display: inline-block;
@@ -520,7 +497,7 @@ textarea {
   }
 }
 
-@media screen and (max-height: 940px) and (min-width: 940px) and (min-device-width: 940px){
+@media screen and (max-height: 825px) and (min-width: 825px) and (min-device-width: 825px){
   textarea {
     min-height: 50px;
   }
@@ -539,6 +516,7 @@ textarea {
 </head>
 <body>
   <div class="canvases">
+    <canvas id="compressionCanvas"></canvas>
     <canvas id="encodeCanvas"></canvas>
     <canvas id="decodeCanvas"></canvas>
   </div>
@@ -575,6 +553,7 @@ textarea {
       <div class="block">
       <h2>File <a>(recommended < 1MB)</a></h2>
         <h3><input type="file" id="encodefileInput"/><a id="encodeFile" class="arrow"></a></h3>
+        <p><input type="checkbox" id="compressionCheck"/>&nbsp;Compress image for Imgur</p>
         <h3><input type="url" id="encodeURLInput" placeholder="Image URL"/> <a id="encodeURL" class="arrow"></a></h3>
       <h3>Plain Text <a id="encodeText" class="arrow"></a></h3>
         <textarea id="encodeTextInput"></textarea>
@@ -665,10 +644,6 @@ var ectx = ec.getContext("2d");
 var dc = id("decodeCanvas");
 var dctx = dc.getContext("2d");
 var inputString, encodingImage, decodeString, decodingImage;
-
-// test variables
-//id("encodeTextInput").value = "data:text/html;charset=utf-8,<!doctype html><html lang='en'><head><meta charset='utf-8'><title>HTML5 Test Page</title></head><body><h3>Wrapped in a <code>&lt;figure&gt;</code> element, no <code>&lt;figcaption&gt;</code></h3>  </body></html>";
-
 
 //image shape settings
 
@@ -957,12 +932,61 @@ id("encodefileInput").addEventListener("change", function() {
     reader.onload = function(event) {
         //console.log(event.target.result);
         inputString = event.target.result;
+      console.log("before: " + inputString.length);
         //drawColor();
-      if(files.size > 1048575){
+      if(id("compressionCheck").checked){
+        if(inputString.indexOf("data:image") != -1){
+          var compressionImage = new Image();
+          compressionImage.addEventListener("load", function(){
+            console.log("yes");
+            ectx.clearRect(0, 0, ec.width, ec.height);
+            ec.height = this.height;
+            ec.width = this.width;
+            ectx.drawImage(this,0,0);
+            inputString = ec.toDataURL('image/jpeg',0.9);
+            console.log("compression level 1: " + inputString.length);
+            if(inputString.length > 750000){
+              ec.height = (this.height * 0.8);
+              ec.width = (this.width * 0.8);
+              ectx.drawImage(this,0,0,(this.width * 0.8),(this.height * 0.8));
+              inputString = ec.toDataURL('image/jpeg',0.9);
+              console.log("compression level 2: " + inputString.length);
+              if(inputString.length > 750000){
+                ec.height = (this.height * 0.5);
+                ec.width = (this.width * 0.5);
+                ectx.drawImage(this,0,0,(this.width * 0.5),(this.height * 0.5));
+                inputString = ec.toDataURL('image/jpeg',0.9);
+                console.log("compression level 3: " + inputString.length);
+                if(inputString.length > 750000){
+                  ec.height = (this.height * 0.3);
+                  ec.width = (this.width * 0.3);
+                  ectx.drawImage(this,0,0,(this.width * 0.3),(this.height * 0.3));
+                  inputString = ec.toDataURL('image/jpeg',0.8);
+                  console.log("compression level 4: " + inputString.length);
+                  if(inputString.length > 750000){
+                    ec.height = (this.height * 0.25);
+                    ec.width = (this.width * 0.25);
+                    ectx.drawImage(this,0,0,(this.width * 0.25),(this.height * 0.25));
+                    inputString = ec.toDataURL('image/jpeg',0.7);
+                    console.log("compression level 5: " + inputString.length);
+                  }
+                }
+              }
+            }
+            console.log("after: " + inputString.length);
+            drawColor();
+          }, false);
+          compressionImage.src = inputString;
+         }
+      }
+      else{
+      if(files.size > 1000000){
         showError("File is larger than 1MB. Encoding it may crash your browser. Click the arrow to continue.");
       }
       else{
+        console.log("draw: " + inputString.length);
         drawColor();
+      }
       }
     };
     reader.readAsDataURL(files);
