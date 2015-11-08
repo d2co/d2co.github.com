@@ -636,6 +636,10 @@ textarea {
   </div>
 </div>
 <script>
+if (window.location.protocol != "https:"){
+  window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
+}
+
 var id = function(name) {
     return document.getElementById(name);
 };
@@ -644,6 +648,10 @@ var ectx = ec.getContext("2d");
 var dc = id("decodeCanvas");
 var dctx = dc.getContext("2d");
 var inputString, encodingImage, decodeString, decodingImage;
+
+// test variables
+//id("encodeTextInput").value = "data:text/html;charset=utf-8,<!doctype html><html lang='en'><head><meta charset='utf-8'><title>HTML5 Test Page</title></head><body><h3>Wrapped in a <code>&lt;figure&gt;</code> element, no <code>&lt;figcaption&gt;</code></h3>  </body></html>";
+
 
 //image shape settings
 
@@ -1223,7 +1231,12 @@ xhr.onreadystatechange = function() {
     id("loading").setAttribute("class", "hidden");
     var data = JSON.parse(xhr.response);
     console.log(xhr.response);
-    showError("Imgur upload failed. (" + data.status + ")");
+    if (data.status == 400){
+      showError("Imgur upload failed. Try using the <a href='https://d2co.github.io/'>secure site.</a> (" + data.status + ")");
+    }
+    else {
+      showError("Imgur upload failed. (" + data.status + ")");
+    }
   }
   if (xhr.readyState == 4 && xhr.status == 200) {
     id("loading").setAttribute("class", "hidden");
@@ -1238,7 +1251,7 @@ xhr.onreadystatechange = function() {
 if (location.protocol === 'https:') {
     xhr.open("POST", "https://api.imgur.com/3/upload", true);
 }
-if (location.protocol === 'http:') {
+else if (location.protocol === 'http:') {
     xhr.open("POST", "http://api.imgur.com/3/upload", true);
 }
 xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
