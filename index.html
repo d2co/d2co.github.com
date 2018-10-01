@@ -540,7 +540,7 @@ textarea {
         <p><input type="radio" name="shape" id="shapeWidth"/>&nbsp;Width</p>
         <p id="lengthDisplay"><input type="number" id="shapeLength"/>px</p>
       </form>
-        <div class="settings-footer">v0.3 · <a href="http://inclushe.com">made by Inclushe</a></div>
+        <div class="settings-footer">v0.3 · <a href="https://inclushe.com">made by Inclushe</a></div>
       </div>
     </div>
   </div>
@@ -1023,7 +1023,7 @@ id("encodeURL").addEventListener("click", function() {
     encodingImage.src = id("encodeURLInput").value;
     }
     else {
-    encodingImage.src = "http://" + id("encodeURLInput").value;
+    encodingImage.src = "https://" + id("encodeURLInput").value;
     }
 }, false);
 
@@ -1190,7 +1190,7 @@ id("decodeURL").addEventListener("click", function() {
       decodingImage.src = id("decodeURLInput").value;
     }
     else{
-      decodingImage.src = "http://" + id("decodeURLInput").value;
+      decodingImage.src = "https://" + id("decodeURLInput").value;
     }
 }, false);
 
@@ -1244,7 +1244,7 @@ xhr.onreadystatechange = function() {
     console.log(xhr.response);
     id("imgurContainer").setAttribute("class", "imgur-container");
     id("imgurURL").innerHTML = data.data.link;
-    id("directDecodeURL").innerHTML = "http://d2co.github.io/f?i=" + data.data.id;
+    id("directDecodeURL").innerHTML = "https://d2co.github.io/f?i=" + data.data.id;
   }
 };
 
@@ -1252,7 +1252,7 @@ if (location.protocol === 'https:') {
     xhr.open("POST", "https://api.imgur.com/3/upload", true);
 }
 else if (location.protocol === 'http:') {
-    xhr.open("POST", "http://api.imgur.com/3/upload", true);
+    xhr.open("POST", "https://api.imgur.com/3/upload", true);
 }
 xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
 xhr.setRequestHeader("Authorization", "Client-ID " + clientId);
