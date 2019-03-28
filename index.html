@@ -1256,7 +1256,7 @@ else if (location.protocol === 'http:') {
 }
 xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
 xhr.setRequestHeader("Authorization", "Client-ID " + clientId);
-xhr.send(JSON.stringify({image: img}));
+xhr.send(JSON.stringify({image: img, dataType: "jsonp"}));
 }
 
 id("encodeImgur").addEventListener("click",function(){
