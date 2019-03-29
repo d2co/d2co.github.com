@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>Data to Colors</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href='https://fonts.googleapis.com/css?family=Roboto+Mono:300,400' rel='stylesheet' type='text/css'>
+  <!-- <link href='https://fonts.googleapis.com/css?family=Roboto+Mono:300,400' rel='stylesheet' type='text/css'> -->
 <style>
 
 body {
@@ -636,9 +636,9 @@ textarea {
   </div>
 </div>
 <script>
-if (window.location.protocol != "https:"){
-  window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
-}
+// if (window.location.protocol != "https:"){
+//   window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
+// }
 
 var id = function(name) {
     return document.getElementById(name);
@@ -1209,54 +1209,57 @@ var showError = function(info){
 };
 
 function share(){
-var clientId = "5b8e80704fd9601";
 try {
   var img = ec.toDataURL('image/png', 1).split(',')[1];
 }
 catch(e) {
   var img = ec.toDataURL().split(',')[1];
 }
+
+console.log({image: img})
   
-var xhr;
-if (window.XMLHttpRequest) {
-  xhr = new XMLHttpRequest();
-}
-else {
-  //error
-}
+fetch("https://data-to-colors-imgur.azurewebsites.net/api/upload", {
+  method: 'POST',
+  headers: {
+      "Content-Type": "text/plain; charset=utf-8"
+  },
+  body: JSON.stringify({image: img}),
+})
+.then(res => res.json())
+.then(res => {
+  id("loading").setAttribute("class", "hidden");
+  id("imgurContainer").setAttribute("class", "imgur-container");
+  id("imgurURL").innerHTML = res.data.link;
+  id("directDecodeURL").innerHTML = "https://d2co.github.io/f?i=" + res.data.id;
+})
+.catch((e) => {
+  id("loading").setAttribute("class", "hidden");
+  showError("Imgur upload failed. Check the console.");
+  console.error(e)
+})
 
-xhr.onreadystatechange = function() {
-  if (xhr.readyState == 4 && xhr.status != 200) {
-    //error
-    id("loading").setAttribute("class", "hidden");
-    var data = JSON.parse(xhr.response);
-    console.log(xhr.response);
-    if (data.status == 400){
-      showError("Imgur upload failed. Try using the <a href='https://d2co.github.io/'>secure site.</a> (" + data.status + ")");
-    }
-    else {
-      showError("Imgur upload failed. (" + data.status + ")");
-    }
-  }
-  if (xhr.readyState == 4 && xhr.status == 200) {
-    id("loading").setAttribute("class", "hidden");
-    var data = JSON.parse(xhr.response);
-    console.log(xhr.response);
-    id("imgurContainer").setAttribute("class", "imgur-container");
-    id("imgurURL").innerHTML = data.data.link;
-    id("directDecodeURL").innerHTML = "https://d2co.github.io/f?i=" + data.data.id;
-  }
-};
-
-if (location.protocol === 'https:') {
-    xhr.open("POST", "https://api.imgur.com/3/upload", true);
-}
-else if (location.protocol === 'http:') {
-    xhr.open("POST", "https://api.imgur.com/3/upload", true);
-}
-xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
-xhr.setRequestHeader("Authorization", "Client-ID " + clientId);
-xhr.send(JSON.stringify({image: img, dataType: "jsonp"}));
+// xhr.onreadystatechange = function() {
+//   if (xhr.readyState == 4 && xhr.status != 200) {
+//     //error
+//     id("loading").setAttribute("class", "hidden");
+//     var data = JSON.parse(xhr.response);
+//     console.log(xhr.response);
+//     if (data.status == 400){
+//       showError("Imgur upload failed. Try using the <a href='https://d2co.github.io/'>secure site.</a> (" + data.status + ")");
+//     }
+//     else {
+//       showError("Imgur upload failed. (" + data.status + ")");
+//     }
+//   }
+//   if (xhr.readyState == 4 && xhr.status == 200) {
+//     id("loading").setAttribute("class", "hidden");
+//     var data = JSON.parse(xhr.response);
+//     console.log(xhr.response);
+//     id("imgurContainer").setAttribute("class", "imgur-container");
+//     id("imgurURL").innerHTML = data.data.link;
+//     id("directDecodeURL").innerHTML = "https://d2co.github.io/f?i=" + data.data.id;
+//   }
+// };
 }
 
 id("encodeImgur").addEventListener("click",function(){
